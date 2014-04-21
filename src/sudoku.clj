@@ -30,18 +30,18 @@
           y ys]
       (value-at board [y x])))))
 
+(def all-values #{1 2 3 4 5 6 7 8 9})
+
 (defn valid-values-for [board coord]
   (if (has-value? board coord)
     #{}
-    (set/difference #{1 2 3 4 5 6 7 8 9} (set/union (block-values board coord) (row-values board coord) (col-values board coord)))))
+    (set/difference all-values (set/union (block-values board coord) (row-values board coord) (col-values board coord)))))
 
 (defn filled? [board]
   (reduce (fn [filled-so-far row] (and filled-so-far (not (contains? (set row) 0)))) true board))
 
 (defn rows [board]
   (map set board))
-
-(def all-values #{1 2 3 4 5 6 7 8 9})
 
 (defn all-true? [elements]
   (reduce (fn [one other] (and one other)) elements))
@@ -68,13 +68,14 @@
   (contains-all-values? (blocks board)))
 
 (defn valid-solution? [board]
-  nil)
+  (and (valid-rows? board) (valid-cols? board) (valid-blocks? board)))
 
 (defn set-value-at [board coord new-value]
-  nil)
+  (assoc-in board coord new-value))
+
 
 (defn find-empty-point [board]
-  nil)
+  (first (filter #(not= (second %) -1) (map-indexed (fn [y x] [y x]) (map (fn [row] (.indexOf row 0)) board)))))
 
 (defn solve [board]
   nil)
