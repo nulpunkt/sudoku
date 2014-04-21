@@ -12,40 +12,60 @@
 (defn row-values [board [y x]]
   (set (get board y)))
 
-(def all-values #{0 1 2 3 4 5 6 7 8})
-
 (defn col-values [board [y x]]
-  (set (map (fn [y] (value-at board [y x])) all-values)))
+  (set (map (fn [y] (value-at board [y x])) #{0 1 2 3 4 5 6 7 8})))
 
 (defn coord-pairs [coords]
-  nil)
+  (for [x coords
+        y coords]
+    [x y]))
 
-(defn block-values [board coord]
-  nil)
+(defn block-values [board [y x]]
+  (let [round-left (fn [n] (* (quot n 3) 3))
+        top-left [(round-left y) (round-left x)]
+        box-range (fn [n] (range n (+ n 3)))
+        xs (box-range (second top-left))
+        ys (box-range (first top-left))]
+    (set (for [x xs
+          y ys]
+      (value-at board [y x])))))
 
 (defn valid-values-for [board coord]
-  nil)
+  (if (has-value? board coord)
+    #{}
+    (set/difference #{1 2 3 4 5 6 7 8 9} (set/union (block-values board coord) (row-values board coord) (col-values board coord)))))
 
 (defn filled? [board]
-  nil)
+  (reduce (fn [filled-so-far row] (and filled-so-far (not (contains? (set row) 0)))) true board))
 
 (defn rows [board]
-  nil)
+  (map set board))
+
+(def all-values #{1 2 3 4 5 6 7 8 9})
+
+(defn all-true? [elements]
+  (reduce (fn [one other] (and one other)) elements))
+
+(defn contains-all-values? [elements]
+  (all-true? (map (fn [a-set] (empty? (set/difference all-values a-set))) elements)))
 
 (defn valid-rows? [board]
-  nil)
+  (contains-all-values? (rows board)))
 
 (defn cols [board]
-  nil)
+  (map set (apply map vector board)))
 
 (defn valid-cols? [board]
-  nil)
+  (contains-all-values? (cols board)))
 
 (defn blocks [board]
-  nil)
+  " create a point in every block "
+  (for [y (range 0 7 3)
+        x (range 0 7 3)]
+    (block-values board [y x])))
 
 (defn valid-blocks? [board]
-  nil)
+  (contains-all-values? (blocks board)))
 
 (defn valid-solution? [board]
   nil)
