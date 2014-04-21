@@ -9,11 +9,13 @@
 (defn has-value? [board coord]
   (not= 0 (value-at board coord)))
 
-(defn row-values [board coord]
-  nil)
+(defn row-values [board [y x]]
+  (set (get board y)))
 
-(defn col-values [board coord]
-  nil)
+(def all-values #{0 1 2 3 4 5 6 7 8})
+
+(defn col-values [board [y x]]
+  (set (map (fn [y] (value-at board [y x])) all-values)))
 
 (defn coord-pairs [coords]
   nil)
